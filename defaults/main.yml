@@ -1,0 +1,37 @@
+---
+
+# Default mirror.
+apt_default_mirror: 'http://mirror.mephi.ru/debian'
+
+# Distribution name.
+# Note, that for Debian 6 ('squeeze') 'ansible_distribution_release' is _not_
+# defined ('NA').
+apt_suite: "{{ ansible_distribution_release }}"
+
+# Default 'component'-s for 'deb' repository specification line.
+apt_components:
+  - 'main'
+  - 'contrib'
+  - 'non-free'
+
+# Whether to add source repository by default.
+apt_add_src: true
+
+apt_repositories_default:
+  - { dist: "{{ apt_suite }}" }
+  - { dist: "{{ apt_suite }}-updates" }
+  - { url:  'http://security.debian.org/debian-security'
+    , dist: "{{ apt_suite }}/updates"
+    }
+
+# apt repositories to add. Supported fields are:
+# - 'type' - either 'deb' or 'deb-src'. If not set will use 'deb'.
+# - 'url' - URL. If not set, will use 'apt_default_mirror' as default value.
+# - 'dist' - debian suite specification. If not set, will use 'apt_suite' as
+# default value.
+# - 'components' - list of components. For debian official mirrors this is
+# 'main', 'contrib' or 'non-free' . If not set, will use 'apt_components' as
+# default value.
+# - 'add_src' - add corresponding 'deb-src' line automatically or not. If not
+# set, will use 'apt_add_src' as default value.
+apt_repositories: "{{ apt_repositories_default }}"

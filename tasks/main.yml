@@ -1,0 +1,39 @@
+---
+
+- block:
+    - name: Define apt repositories list
+      set_fact:
+        _apt_repositories: >-
+          {{ _apt_repositories
+              + [ def_item | combine(item) ]
+              + ( [ def_item_src | combine(item) ]
+                    if item.add_src | default(apt_add_src)
+                    else [] )
+          }}
+      vars:
+        def_item: >-
+          {{  { 'type'        : 'deb'
+              , 'url'         : apt_default_mirror
+              , 'dist'        : apt_suite
+              , 'components'  : apt_components
+              }
+          }}
+        def_item_src: >-
+          {{ def_item | combine({'type': 'deb-src'}) }}
+      loop: "{{ apt_repositories }}"
+
+    - name: Show apt repositories
+      debug:
+        var: _apt_repositories
+
+- block:
+    - name: Install sources.list
+      template:
+        src:    'sources.list'
+        dest:   '/etc/apt/sources.list'
+        force:  true
+        backup: true
+        owner:  'root'
+        group:  'root'
+        mode:   0644
+
