@@ -25,12 +25,17 @@ apt_ignore_valid: >-
       else true
   }}
 
-apt_repositories_default:
-  - { dist: "{{ apt_suite }}" }
-  - { dist: "{{ apt_suite }}-updates" }
-  - { url:  'http://security.debian.org/debian-security'
-    , dist: "{{ apt_suite }}/updates"
-    }
+# Whether to add backports repository to default apt repository list.
+apt_add_backports: true
+
+apt_repositories_default: >-
+  {{  [ { 'dist': "{{ apt_suite }}" }
+      , { 'dist': "{{ apt_suite }}-updates" }
+      , { 'dist': "{{ apt_suite }}/updates"
+        , 'url' : 'http://security.debian.org/debian-security'
+        }
+      ] + ( [ { 'dist': "{{ apt_suite }}-backports" } ] if apt_add_backports else [] )
+  }}
 
 # apt repositories to add. Supported fields are:
 # - 'type' - either 'deb' or 'deb-src'. If not set will use 'deb'.
