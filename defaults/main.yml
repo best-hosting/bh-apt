@@ -17,6 +17,14 @@ apt_components:
 # Whether to add source repository by default.
 apt_add_src: true
 
+# Ignore Release file valid check. Correct value will be set automatically for
+# no longer supported distributions.
+apt_ignore_valid: >-
+  {{ false
+      if ansible_distribution_major_version | int >= debian_supported_os_version
+      else true
+  }}
+
 apt_repositories_default:
   - { dist: "{{ apt_suite }}" }
   - { dist: "{{ apt_suite }}-updates" }

@@ -36,4 +36,15 @@
         owner:  'root'
         group:  'root'
         mode:   0644
+    - name: Disabled Release file valid check
+      copy:
+        src:    '99ignore-valid'
+        dest:   '/etc/apt/apt.conf.d/99ignore-valid'
+        force:  true
+        backup: true
+        owner:  'root'
+        group:  'root'
+        mode:   0644
+        owner:  'root'
+      when: apt_ignore_valid
 

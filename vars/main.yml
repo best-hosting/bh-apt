@@ -2,3 +2,6 @@
 
 # Internal apt repositories list.
 _apt_repositories: []
+
+# Minimal (oldest) yet supported (officially) debian major version.
+debian_supported_os_version: 9
