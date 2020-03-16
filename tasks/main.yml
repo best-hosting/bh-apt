@@ -16,6 +16,10 @@
               , 'url'         : apt_default_mirror
               , 'dist'        : apt_suite
               , 'components'  : apt_components
+              , 'pin'         : 'release n=' + item.dist | regex_search('[^/]+')
+              , 'pin_priority' :
+                  990 if apt_suite == apt_suite | regex_search('(^|(?<=\W))' + apt_suite + '((?=\W)|$)')
+                    else 100
               }
           }}
         def_item_src: >-
@@ -47,4 +51,15 @@
         mode:   0644
         owner:  'root'
       when: apt_ignore_valid
+
+- block:
+    - name: Install apt preferences
+      template:
+        src:    'preferences'
+        dest:   '/etc/apt/preferences'
+        force:  true
+        backup: true
+        owner:  'root'
+        group:  'root'
+        mode:   0644
 
