@@ -16,19 +16,37 @@
               , 'url'         : apt_default_mirror
               , 'dist'        : apt_suite
               , 'components'  : apt_components
-              , 'pin'         : 'release n=' + item.dist | regex_search('[^/]+')
-              , 'pin_priority' :
-                  990 if apt_suite == apt_suite | regex_search('(^|(?<=\W))' + apt_suite + '((?=\W)|$)')
-                    else 100
               }
           }}
         def_item_src: >-
           {{ def_item | combine({'type': 'deb-src'}) }}
       loop: "{{ apt_repositories }}"
 
+    - name: Define apt preferences list
+      set_fact:
+        _apt_preferences: >-
+          {{ _apt_preferences
+              + [ def_item | combine(item) ]
+          }}
+      vars:
+        # If underscore should be treated as word delimiter in 'n=' value, use
+        # '([a-zA-Z0-9]+[-_])*' regex instead of '(\w+\W)*' below.
+        def_item: >-
+          {{  { 'pkgs'  : '*'
+              , 'pin_priority' :
+                  600 if item.pin
+                          | regex_search(' n=(\w+\W)*' + apt_suite + '(\W\w+)*(, |$)') is not none
+                    else 100
+              }
+          }}
+      loop: "{{ apt_preferences }}"
+
     - name: Show apt repositories
       debug:
         var: _apt_repositories
+    - name: Show apt preferences
+      debug:
+        var: _apt_preferences
 
 - block:
     - name: Install sources.list

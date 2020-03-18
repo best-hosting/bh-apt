@@ -1,9 +1,11 @@
 # Genearated by bh-apt ansible role.
 
-{% for r in _apt_repositories -%}
-Explanation: {{ r.dist }}, {{ r.url }}
-Package: *
-Pin: {{ r.pin }}
-Pin-Priority: {{ r.pin_priority }}
+{% for p in _apt_preferences -%}
+{% if p.comment is defined %}
+Explanation: {{ p.comment }}
+{% endif %}
+Package: {{ p.pkgs }}
+Pin: {{ p.pin }}
+Pin-Priority: {{ p.pin_priority}}
 
 {% endfor %}

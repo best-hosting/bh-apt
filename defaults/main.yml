@@ -28,6 +28,7 @@ apt_ignore_valid: >-
 # Whether to add backports repository to default apt repository list.
 apt_add_backports: true
 
+# Default debian apt repositories.
 apt_repositories_default: >-
   {{  [ { 'dist': "{{ apt_suite }}" }
       , { 'dist': "{{ apt_suite }}-updates" }
@@ -37,7 +38,24 @@ apt_repositories_default: >-
       ] + ( [ { 'dist': "{{ apt_suite }}-backports" } ] if apt_add_backports else [] )
   }}
 
-# apt repositories to add. Supported fields are:
+# Default apt preferences (set debian official repositories as target
+# release).
+apt_preferences_default: >-
+  {{  [ { 'comment' : "Target release"
+        , 'pkgs'    : '*'
+        , 'pin'     : 'release n=' + apt_suite + ', o=Debian'
+        , 'pin_priority': 990
+        }
+      , { 'comment' : "Target release updates"
+        , 'pkgs'    : '*'
+        , 'pin'     : 'release n=' + apt_suite + '-updates'
+                      + ', o=Debian'
+        , 'pin_priority': 990
+        }
+      ]
+  }}
+
+# apt repositories. Supported fields are:
 # - 'type' - either 'deb' or 'deb-src'. If not set will use 'deb'.
 # - 'url' - URL. If not set, will use 'apt_default_mirror' as default value.
 # - 'dist' - debian suite specification. If not set, will use 'apt_suite' as
@@ -48,3 +66,13 @@ apt_repositories_default: >-
 # - 'add_src' - add corresponding 'deb-src' line automatically or not. If not
 # set, will use 'apt_add_src' as default value.
 apt_repositories: "{{ apt_repositories_default }}"
+
+# apt preferences. Supported fields are:
+# - 'pkgs' is 'Package' field. Defaults to '*'.
+# - 'pin' is 'Pin' field. This field is required.
+# - 'pin_priority' is 'Pin-Priority' field. If not specified and 'pin'
+# contains `apt_suite` name as a word in 'n=' field, set to 600, Otherwise set
+# to 100.
+# - 'comment' is 'Explanation' field. If not specified, just omit it.
+apt_preferences: "{{ apt_preferences_default }}"
+
