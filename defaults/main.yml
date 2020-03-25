@@ -41,12 +41,12 @@ apt_repositories_default: >-
 # Default apt preferences (set debian official repositories as target
 # release).
 apt_preferences_default: >-
-  {{  [ { 'comment' : "Target release"
+  {{  [ { 'comment' : "(default) Target release"
         , 'pkgs'    : '*'
         , 'pin'     : 'release n=' + apt_suite + ', o=Debian'
         , 'pin_priority': 990
         }
-      , { 'comment' : "Target release updates"
+      , { 'comment' : "(default) Target release updates"
         , 'pkgs'    : '*'
         , 'pin'     : 'release n=' + apt_suite + '-updates'
                       + ', o=Debian'
@@ -69,6 +69,12 @@ apt_preferences_default: >-
 # repository.  May be used to avoid warning 'WARNING: The following packages
 # cannot be authenticated!' caused by e.g. expired gpg keys during package
 # install.
+# - 'pin', 'pin_priority' - (see 'apt_preferences' description below) these
+# fields may be specified here as well effectively allowing to specify pins
+# along with sources. But these fields will only work for 'deb' sources type,
+# 'pkgs: *' will be always set, and 'comment' generated automatically. Also,
+# these pins are added _after_ ones specified in 'apt_preferences', thus will
+# take effect only if nothing from 'apt_preferences' matches.
 apt_repositories: "{{ apt_repositories_default }}"
 
 # apt preferences. Supported fields are:

@@ -23,6 +23,24 @@
           {{ def_item | combine({'type': 'deb-src'}) }}
       loop: "{{ apt_repositories }}"
 
+    - name: Extract apt repository preferences
+      set_fact:
+        _apt_repositories_prefs: >-
+          {{  _apt_repositories_prefs
+                + [ item | combine(
+                      { 'pkgs'    : '*'
+                      , 'comment' : "Generated for '" + item.dist + "'"
+                                      + " from source '" + item.url + "'"
+                      })
+                  ]
+          }}
+      loop: >-
+        {{ _apt_repositories
+              | selectattr('type', 'equalto', 'deb')
+              | selectattr('pin', 'defined')
+              | list
+        }}
+
     - name: Define apt preferences list
       set_fact:
         _apt_preferences: >-
@@ -40,7 +58,7 @@
                     else 100
               }
           }}
-      loop: "{{ apt_preferences }}"
+      loop: "{{ apt_preferences + _apt_repositories_prefs }}"
 
     - name: Show apt repositories
       debug:
