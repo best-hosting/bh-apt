@@ -16,6 +16,7 @@
               , 'url'         : apt_default_mirror
               , 'dist'        : apt_suite
               , 'components'  : apt_components
+              , 'trusted'     : false
               }
           }}
         def_item_src: >-
@@ -59,7 +60,7 @@
         group:  'root'
         mode:   0644
     - name: Disabled Release file valid check
-      copy:
+      template:
         src:    '99ignore-valid'
         dest:   '/etc/apt/apt.conf.d/99ignore-valid'
         force:  true

@@ -65,6 +65,10 @@ apt_preferences_default: >-
 # default value.
 # - 'add_src' - add corresponding 'deb-src' line automatically or not. If not
 # set, will use 'apt_add_src' as default value.
+# - 'trusted' - (only for wheezy and later) (bool) disable gpg checks for
+# repository.  May be used to avoid warning 'WARNING: The following packages
+# cannot be authenticated!' caused by e.g. expired gpg keys during package
+# install.
 apt_repositories: "{{ apt_repositories_default }}"
 
 # apt preferences. Supported fields are:
