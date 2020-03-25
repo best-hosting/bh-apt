@@ -77,6 +77,7 @@
         owner:  'root'
         group:  'root'
         mode:   0644
+
     - name: Disabled Release file valid check
       template:
         src:    '99ignore-valid'
@@ -89,7 +90,6 @@
         owner:  'root'
       when: apt_ignore_valid
 
-- block:
     - name: Install apt preferences
       template:
         src:    'preferences'
@@ -99,4 +99,20 @@
         owner:  'root'
         group:  'root'
         mode:   0644
+
+- block:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install archive keyring package
+      package:
+        name: >-
+          {{ _apt_repositories 
+                | selectattr('keyring', 'defined')
+                | map(attribute='keyring')
+                | list | default([])
+          }}
+        state: present
+        allow_unauthenticated: true
 

@@ -69,6 +69,7 @@ apt_preferences_default: >-
 # repository.  May be used to avoid warning 'WARNING: The following packages
 # cannot be authenticated!' caused by e.g. expired gpg keys during package
 # install.
+# - 'keyring' - package with repository archive keys.
 # - 'pin', 'pin_priority' - (see 'apt_preferences' description below) these
 # fields may be specified here as well effectively allowing to specify pins
 # along with sources. But these fields will only work for 'deb' sources type,
