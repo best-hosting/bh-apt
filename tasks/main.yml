@@ -1,5 +1,8 @@
 ---
 
+- name: Load OS variables
+  import_tasks: load.yml
+
 - block:
     - name: Define apt repositories list
       set_fact:
@@ -13,7 +16,7 @@
       vars:
         def_item: >-
           {{  { 'type'        : 'deb'
-              , 'url'         : apt_default_mirror
+              , 'url'         : apt_mirror
               , 'dist'        : apt_suite
               , 'components'  : apt_components
               , 'trusted'     : false
