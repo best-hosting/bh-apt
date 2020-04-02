@@ -2,6 +2,8 @@
 
 # Internal apt repositories list.
 _apt_repositories: []
+# Pins (apt preferences) specified alongside with repositories.
+_apt_repositories_prefs: []
+# Internal apt preferences list.
+_apt_preferences: []
 
-# Minimal (oldest) yet supported (officially) debian major version.
-debian_supported_os_version: 9

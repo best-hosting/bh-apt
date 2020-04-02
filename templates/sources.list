@@ -1,6 +1,6 @@
 # Genearated by bh-apt ansible role. Do NOT edit, you moron!
 
 {% for r in _apt_repositories -%}
-    {{ r.type }} {{ r.url }} {{ r.dist }} {{ r.components | join(' ') }}
+    {{ r.type }} {{ r.trusted | ternary('[trusted=yes]', '') }} {{ r.url }} {{ r.dist }} {{ r.components | join(' ') }}
 
 {% endfor %}

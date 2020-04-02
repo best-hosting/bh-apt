@@ -1,12 +1,10 @@
 ---
 
 # Default mirror.
-apt_default_mirror: 'http://mirror.mephi.ru/debian'
+apt_mirror: "{{ default_apt_mirror }}"
 
 # Distribution name.
-# Note, that for Debian 6 ('squeeze') 'ansible_distribution_release' is _not_
-# defined ('NA').
-apt_suite: "{{ ansible_distribution_release }}"
+apt_suite: "{{ default_apt_suite }}"
 
 # Default 'component'-s for 'deb' repository specification line.
 apt_components:
@@ -25,19 +23,11 @@ apt_ignore_valid: >-
       else true
   }}
 
-# Whether to add backports repository to default apt repository list.
+# Whether to add backports repository to default apt repository list. This
+# will take effect _only_, if 'apt_repositories' has default value.
 apt_add_backports: true
 
-apt_repositories_default: >-
-  {{  [ { 'dist': "{{ apt_suite }}" }
-      , { 'dist': "{{ apt_suite }}-updates" }
-      , { 'dist': "{{ apt_suite }}/updates"
-        , 'url' : 'http://security.debian.org/debian-security'
-        }
-      ] + ( [ { 'dist': "{{ apt_suite }}-backports" } ] if apt_add_backports else [] )
-  }}
-
-# apt repositories to add. Supported fields are:
+# apt repositories. Supported fields are:
 # - 'type' - either 'deb' or 'deb-src'. If not set will use 'deb'.
 # - 'url' - URL. If not set, will use 'apt_default_mirror' as default value.
 # - 'dist' - debian suite specification. If not set, will use 'apt_suite' as
@@ -47,4 +37,25 @@ apt_repositories_default: >-
 # default value.
 # - 'add_src' - add corresponding 'deb-src' line automatically or not. If not
 # set, will use 'apt_add_src' as default value.
-apt_repositories: "{{ apt_repositories_default }}"
+# - 'trusted' - (only for wheezy and later) (bool) disable gpg checks for
+# repository.  May be used to avoid warning 'WARNING: The following packages
+# cannot be authenticated!' caused by e.g. expired gpg keys during package
+# install.
+# - 'keyring' - package with repository archive keys.
+# - 'pin', 'pin_priority' - (see 'apt_preferences' description below) these
+# fields may be specified here as well effectively allowing to specify pins
+# along with sources. But these fields will only work for 'deb' sources type,
+# 'pkgs: *' will be always set, and 'comment' generated automatically. Also,
+# these pins are added _after_ ones specified in 'apt_preferences', thus will
+# take effect only if nothing from 'apt_preferences' matches.
+apt_repositories: "{{ default_apt_repositories }}"
+
+# apt preferences. Supported fields are:
+# - 'pkgs' is 'Package' field. Defaults to '*'.
+# - 'pin' is 'Pin' field. This field is required.
+# - 'pin_priority' is 'Pin-Priority' field. If not specified and 'pin'
+# contains `apt_suite` name as a word in 'n=' field, set to 600, Otherwise set
+# to 100.
+# - 'comment' is 'Explanation' field. If not specified, just omit it.
+apt_preferences: "{{ default_apt_preferences }}"
+

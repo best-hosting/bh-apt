@@ -1,30 +1,14 @@
 ---
 
-- block:
-    - name: Define apt repositories list
-      set_fact:
-        _apt_repositories: >-
-          {{ _apt_repositories
-              + [ def_item | combine(item) ]
-              + ( [ def_item_src | combine(item) ]
-                    if item.add_src | default(apt_add_src)
-                    else [] )
-          }}
-      vars:
-        def_item: >-
-          {{  { 'type'        : 'deb'
-              , 'url'         : apt_default_mirror
-              , 'dist'        : apt_suite
-              , 'components'  : apt_components
-              }
-          }}
-        def_item_src: >-
-          {{ def_item | combine({'type': 'deb-src'}) }}
-      loop: "{{ apt_repositories }}"
+- name: Load OS variables
+  import_tasks: load.yml
+  tags:
+    - always
 
-    - name: Show apt repositories
-      debug:
-        var: _apt_repositories
+- name: Define variables
+  import_tasks: define.yml
+  tags:
+    - always
 
 - block:
     - name: Install sources.list
@@ -36,8 +20,9 @@
         owner:  'root'
         group:  'root'
         mode:   0644
+
     - name: Disabled Release file valid check
-      copy:
+      template:
         src:    '99ignore-valid'
         dest:   '/etc/apt/apt.conf.d/99ignore-valid'
         force:  true
@@ -47,4 +32,30 @@
         mode:   0644
         owner:  'root'
       when: apt_ignore_valid
+
+    - name: Install apt preferences
+      template:
+        src:    'preferences'
+        dest:   '/etc/apt/preferences'
+        force:  true
+        backup: true
+        owner:  'root'
+        group:  'root'
+        mode:   0644
+
+- block:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install archive keyring package
+      package:
+        name: >-
+          {{ _apt_repositories 
+                | selectattr('keyring', 'defined')
+                | map(attribute='keyring')
+                | list | default([])
+          }}
+        state: present
+        allow_unauthenticated: true
 

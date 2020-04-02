@@ -1,0 +1,16 @@
+
+# For Debian 6 ('squeeze') 'ansible_distribution_release' is _not_ defined
+# ('NA').
+default_apt_suite: 'squeeze'
+default_apt_mirror: 'http://snapshot.debian.org/archive/debian/20160301T215315Z/'
+default_apt_repositories:
+  - { dist: 'squeeze' }
+  - { dist: 'squeeze-updates' }
+  - { dist: 'squeeze/updates'
+    , url: 'http://snapshot.debian.org/archive/debian-security/20160301T215315Z/'
+    }
+  - { dist: 'squeeze-lts'
+    , 'pin': 'release n=squeeze-lts, o=Debian'
+    , 'pin_priority': 990
+    }
+

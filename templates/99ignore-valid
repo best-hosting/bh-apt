@@ -1,0 +1,7 @@
+Acquire::Check-Valid-Until "false";
+{# Squeeze does not support options in sources.list and because all its keys
+    are already expired, ignore all gpg checks.
+-#}
+{% if ansible_distribution_major_version | int == 6 %}
+APT::Get::AllowUnauthenticated "true";
+{% endif %}

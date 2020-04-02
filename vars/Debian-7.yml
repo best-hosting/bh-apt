@@ -1,0 +1,23 @@
+---
+
+default_apt_mirror: 'http://snapshot.debian.org/archive/debian/20190321T212815Z/'
+default_apt_repositories:
+  - { dist: 'wheezy' }
+  - { dist: 'wheezy/updates'
+    , url: 'http://snapshot.debian.org/archive/debian-security/20190321T215527Z/'
+    }
+  - { dist: 'wheezy-backports'
+    , url: 'http://archive.debian.org/debian/'
+    }
+  - { dist: 'wheezy-lts'
+    , url: 'http://deb.freexian.com/extended-lts'
+    , pin: 'release n=wheezy-lts, o=Freexian'
+    , pin_priority: 990
+    , keyring: 'freexian-archive-keyring'
+    }
+  - { dist: 'wheezy-lts-kernel'
+    , url: 'http://deb.freexian.com/extended-lts'
+    , 'pin': 'release n=wheezy-lts-kernel, o=Freexian'
+    , 'pin_priority': 990
+    }
+

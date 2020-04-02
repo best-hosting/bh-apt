@@ -1,0 +1,41 @@
+---
+
+# Minimal (oldest) yet (officially) supported debian major version.
+debian_supported_os_version: 9
+
+# Distribution name (codename).
+default_apt_suite: "{{ ansible_distribution_release }}"
+
+# Default apt miror. Used, if 'url' is not specified.
+default_apt_mirror: 'http://mirror.mephi.ru/debian'
+
+# Default debian apt repositories. Used if not overwritten by os-specific
+# default. '-updates' and '/updates' (security) repository priority will be
+# set to 990 in 'default_apt_preferences'. '-backports' repository priority
+# should have priority set in 'Release' file.
+default_apt_repositories: >-
+  {{  [ { 'dist': "{{ apt_suite }}" }
+      , { 'dist': "{{ apt_suite }}-updates" }
+      , { 'dist': "{{ apt_suite }}/updates"
+        , 'url' : 'http://security.debian.org/debian-security'
+        }
+      ] + ( [ { 'dist': "{{ apt_suite }}-backports" } ] if apt_add_backports else [] )
+  }}
+
+# Default apt preferences (set debian official repositories as target
+# release). Used if not overwritten by os-specific defaults.
+default_apt_preferences: >-
+  {{  [ { 'comment' : "(default) Target release"
+        , 'pkgs'    : '*'
+        , 'pin'     : 'release n=' + apt_suite + ', o=Debian'
+        , 'pin_priority': 990
+        }
+      , { 'comment' : "(default) Target release updates"
+        , 'pkgs'    : '*'
+        , 'pin'     : 'release n=' + apt_suite + '-updates'
+                      + ', o=Debian'
+        , 'pin_priority': 990
+        }
+      ]
+  }}
+
