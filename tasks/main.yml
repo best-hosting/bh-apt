@@ -2,73 +2,13 @@
 
 - name: Load OS variables
   import_tasks: load.yml
+  tags:
+    - always
 
-- block:
-    - name: Define apt repositories list
-      set_fact:
-        _apt_repositories: >-
-          {{ _apt_repositories
-              + [ def_item | combine(item) ]
-              + ( [ def_item_src | combine(item) ]
-                    if item.add_src | default(apt_add_src)
-                    else [] )
-          }}
-      vars:
-        def_item: >-
-          {{  { 'type'        : 'deb'
-              , 'url'         : apt_mirror
-              , 'dist'        : apt_suite
-              , 'components'  : apt_components
-              , 'trusted'     : false
-              }
-          }}
-        def_item_src: >-
-          {{ def_item | combine({'type': 'deb-src'}) }}
-      loop: "{{ apt_repositories }}"
-
-    - name: Extract apt repository preferences
-      set_fact:
-        _apt_repositories_prefs: >-
-          {{  _apt_repositories_prefs
-                + [ item | combine(
-                      { 'pkgs'    : '*'
-                      , 'comment' : "Generated for '" + item.dist + "'"
-                                      + " from source '" + item.url + "'"
-                      })
-                  ]
-          }}
-      loop: >-
-        {{ _apt_repositories
-              | selectattr('type', 'equalto', 'deb')
-              | selectattr('pin', 'defined')
-              | list
-        }}
-
-    - name: Define apt preferences list
-      set_fact:
-        _apt_preferences: >-
-          {{ _apt_preferences
-              + [ def_item | combine(item) ]
-          }}
-      vars:
-        # If underscore should be treated as word delimiter in 'n=' value, use
-        # '([a-zA-Z0-9]+[-_])*' regex instead of '(\w+\W)*' below.
-        def_item: >-
-          {{  { 'pkgs'  : '*'
-              , 'pin_priority' :
-                  600 if item.pin
-                          | regex_search(' n=(\w+\W)*' + apt_suite + '(\W\w+)*(, |$)') is not none
-                    else 100
-              }
-          }}
-      loop: "{{ apt_preferences + _apt_repositories_prefs }}"
-
-    - name: Show apt repositories
-      debug:
-        var: _apt_repositories
-    - name: Show apt preferences
-      debug:
-        var: _apt_preferences
+- name: Define variables
+  import_tasks: define.yml
+  tags:
+    - always
 
 - block:
     - name: Install sources.list
