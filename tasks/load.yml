@@ -3,7 +3,7 @@
 - name: load | Define OS and OS release
   set_fact:
     os_vars: '{{ ansible_distribution }}.yml'
-    os_release_vars: '{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml'
+    os_release_vars: '{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml'
 
 - name: load | Show OS vars filenames
   debug:
@@ -14,4 +14,26 @@
 
 - name: load | OS-specific variables
   include_vars: "{{ os_release_vars }}"
+
+- name: load | Load all OS defaults into per-os variable
+  include_vars:
+    file: "{{ item_os_release + '.yml' }}"
+    name: "{{ 'bh_apt_defaults_' + item_os_release }}"
+  vars:
+    item_os_release: "{{ item.0 + '_' + item.1 }}"
+  loop: >-
+    {{ ['Debian'] | product(['6', '7', '8', '9', '10']) | list }}
+
+- name: Debug
+  debug:
+    var: "{{ 'bh_apt_defaults_' + item_os_release }}"
+  vars:
+    item_os_release: "{{ item.0 + '_' + item.1 }}"
+  loop: >-
+    {{ ['Debian'] | product(['6', '7', '8', '9', '10']) | list }}
+
+- name: stop
+  assert:
+    that:
+      - 2 == 1
 
