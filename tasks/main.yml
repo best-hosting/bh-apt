@@ -10,6 +10,15 @@
   tags:
     - always
 
+- name: Huy3
+  debug:
+    var: huy
+
+- name: stop
+  assert:
+    that:
+      - 2 == 1
+
 - block:
     - name: Install sources.list
       template:

@@ -15,10 +15,24 @@
 - name: load | OS-specific variables
   include_vars: "{{ os_release_vars }}"
 
+- name: load | Load all OS 2
+  include_vars:
+    file: 'Debian.yml'
+    name: 'bh_apt_defaults_Debian'
+
 - name: load | Load all OS defaults into per-os variable
   include_vars:
     file: "{{ item_os_release + '.yml' }}"
-    name: "{{ 'bh_apt_defaults_' + item_os_release }}"
+    name: "{{ '_bh_apt_defaults_' + item_os_release }}"
+  vars:
+    item_os_release: "{{ item.0 + '_' + item.1 }}"
+  loop: >-
+    {{ ['Debian'] | product(['6', '7', '8', '9', '10']) | list }}
+
+- name: load | Mege
+  set_fact:
+    "{{ 'bh_apt_defaults_' + item_os_release }}": >-
+        {{ bh_apt_defaults_Debian | combine(vars['_bh_apt_defaults_' + item_os_release]) }}
   vars:
     item_os_release: "{{ item.0 + '_' + item.1 }}"
   loop: >-
@@ -31,6 +45,7 @@
     item_os_release: "{{ item.0 + '_' + item.1 }}"
   loop: >-
     {{ ['Debian'] | product(['6', '7', '8', '9', '10']) | list }}
+
 
 - name: stop
   assert:
