@@ -15,28 +15,91 @@
 - name: load | OS-specific variables
   include_vars: "{{ os_release_vars }}"
 
-- name: load | Load all OS 2
+
+  #- name: load | Load generic OS default for each particular release
+  #  include_vars:
+  #    file: 'Debian.yml'
+  #    name: "{{ '_bh_apt_defaults_' + item_os_release }}"
+  #  vars:
+  #    apt_suite2: "{{ item.1 }}"
+  #    item_os_release: "{{ 'Debian_' + item.0 }}"
+  #  loop: >-
+  #    {{  [ ('6', 'squeeze')
+  #        , ('7', 'wheezy')
+  #        , ('8', 'jessie')
+  #        , ('9', 'stretch')
+  #        , ('10', 'buster')
+  #        ]
+  #    }}
+
+- name: Abc
   include_vars:
     file: 'Debian.yml'
     name: 'bh_apt_defaults_Debian'
+
+- name: Huy
+  set_fact:
+    "{{ 'huy_bh_apt_defaults_Debian_' + item.0 }}": "{{ bh_apt_defaults_Debian }}"
+  vars:
+    apt_suite: "{{ item.1 }}"
+  loop: >-
+    {{  [ ('6', 'squeeze')
+        , ('7', 'wheezy')
+        , ('8', 'jessie')
+        , ('9', 'stretch')
+        , ('10', 'buster')
+        ]
+    }}
+
+- name: Debug222
+  debug:
+    var: "{{ 'huy_bh_apt_defaults_' + item_os_release }}"
+  vars:
+    item_os_release: "{{ item.0 + '_' + item.1 }}"
+  loop: >-
+    {{ ['Debian'] | product(['6', '7', '8', '9', '10']) | list }}
 
 - name: load | Load all OS defaults into per-os variable
   include_vars:
     file: "{{ item_os_release + '.yml' }}"
     name: "{{ '_bh_apt_defaults_' + item_os_release }}"
   vars:
-    item_os_release: "{{ item.0 + '_' + item.1 }}"
+    item_os_release: "{{ 'Debian_' + item.0 }}"
   loop: >-
-    {{ ['Debian'] | product(['6', '7', '8', '9', '10']) | list }}
+    {{  [ ('6', 'squeeze')
+        , ('7', 'wheezy')
+        , ('8', 'jessie')
+        , ('9', 'stretch')
+        , ('10', 'buster')
+        ]
+    }}
 
-- name: load | Mege
-  set_fact:
-    "{{ 'bh_apt_defaults_' + item_os_release }}": >-
-        {{ bh_apt_defaults_Debian | combine(vars['_bh_apt_defaults_' + item_os_release]) }}
-  vars:
-    item_os_release: "{{ item.0 + '_' + item.1 }}"
+- name: Huy1
+  debug:
+    msg: >-
+     {{ vars['_bh_apt_defaults_Debian_' + item.0] }}
   loop: >-
-    {{ ['Debian'] | product(['6', '7', '8', '9', '10']) | list }}
+    {{  [ ('6', 'squeeze')
+        ]
+    }}
+
+- name: Huy2
+  debug:
+    msg: >-
+     {{ vars['huy_bh_apt_defaults_Debian_' + item.0] }}
+  loop: >-
+    {{  [ ('6', 'squeeze')
+        ]
+    }}
+
+- name: load | Merge
+  set_fact:
+    "{{ 'bh_apt_defaults_Debian_' + item.0 }}": >-
+      {{ vars['huy_bh_apt_defaults_Debian_' + item.0] | combine(vars['_bh_apt_defaults_Debian_' + item.0]) }}
+  loop: >-
+    {{  [ ('6', 'squeeze')
+        ]
+    }}
 
 - name: Debug
   debug:
@@ -46,9 +109,27 @@
   loop: >-
     {{ ['Debian'] | product(['6', '7', '8', '9', '10']) | list }}
 
-
 - name: stop
   assert:
     that:
       - 2 == 1
+
+- name: Huy
+  debug:
+    msg: >-
+     {{ vars['huy_bh_apt_defaults_Debian_' + item.0] }}
+  loop: >-
+    {{  [ ('6', 'squeeze')
+        , ('7', 'wheezy')
+        , ('8', 'jessie')
+        , ('9', 'stretch')
+        , ('10', 'buster')
+        ]
+    }}
+
+- name: hhhh
+  debug:
+    msg: "{{ item.1.1 }}"
+  loop: >-
+      {{ ['a'] | product([('x', 1), ('y', 2)]) | list }}
 
