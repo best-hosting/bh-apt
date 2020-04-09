@@ -2,9 +2,9 @@
 
 # The same as default, but '-backports' url is redefined.
 default_apt_repositories: >-
-  {{  [ { 'dist': "{{ apt_suite }}" }
-      , { 'dist': "{{ apt_suite }}-updates" }
-      , { 'dist': "{{ apt_suite }}/updates"
+  {{  [ { 'dist': "jessie" }
+      , { 'dist': "jessie-updates" }
+      , { 'dist': "jessie/updates"
         , 'url' : 'http://security.debian.org/debian-security' }
       , { 'dist': 'jessie-backports'
         , 'url' : 'http://snapshot.debian.org/archive/debian/20190320T025509Z/' }

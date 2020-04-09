@@ -14,12 +14,12 @@ default_apt_mirror: 'http://mirror.mephi.ru/debian'
 # set to 990 in 'default_apt_preferences'. '-backports' repository priority
 # should have priority set in 'Release' file.
 default_apt_repositories: >-
-  {{  [ { 'dist': "{{ apt_suite }}" }
-      , { 'dist': "{{ apt_suite }}-updates" }
-      , { 'dist': "{{ apt_suite }}/updates"
+  {{  [ { 'dist': apt_suite }
+      , { 'dist': apt_suite + '-updates' }
+      , { 'dist': apt_suite + '/updates'
         , 'url' : 'http://security.debian.org/debian-security'
         }
-      ] + ( [ { 'dist': "{{ apt_suite }}-backports" } ] if apt_add_backports else [] )
+      ] + ( [ { 'dist': apt_suite + '-backports' } ] if apt_add_backports else [] )
   }}
 
 # Default apt preferences (set debian official repositories as target
