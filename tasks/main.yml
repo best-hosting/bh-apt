@@ -14,7 +14,7 @@
     - name: Install sources.list
       template:
         src:    'sources.list'
-        dest:   '/etc/apt/sources.list'
+        dest:   "{{ sources_list }}"
         force:  true
         backup: true
         owner:  'root'
@@ -36,7 +36,7 @@
     - name: Install apt preferences
       template:
         src:    'preferences'
-        dest:   '/etc/apt/preferences'
+        dest:   "{{ preferences_pref }}"
         force:  true
         backup: true
         owner:  'root'

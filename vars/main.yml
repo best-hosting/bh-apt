@@ -7,3 +7,19 @@ _apt_repositories_prefs: []
 # Internal apt preferences list.
 _apt_preferences: []
 
+sources_list: >-
+  {{ '/etc/apt/sources.list'
+        if apt_suite == ansible_distribution_release
+           or (apt_suite == 'squeeze' and ansible_distribution_major_version | int == 6)
+        else
+          '/etc/apt/sources_list.d/' + apt_suite + '.list'
+  }}
+
+preferences_pref: >-
+  {{ '/etc/apt/preferences'
+        if apt_suite == ansible_distribution_release
+           or (apt_suite == 'squeeze' and ansible_distribution_major_version | int == 6)
+        else
+          '/etc/apt/preferences.d/' + apt_suite
+  }}
+
