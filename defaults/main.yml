@@ -1,10 +1,15 @@
 ---
 
-# Default mirror.
-apt_mirror: "{{ default_apt_mirror }}"
+# NOTE: Distribution name is _hardcoded_ to 'Debian' in various files.
 
 # Distribution name.
 apt_suite: "{{ default_apt_suite }}"
+
+# Distribution major version.
+apt_distribution_major_version: "{{ ansible_distribution_major_version }}"
+
+# Default mirror.
+apt_mirror: "{{ default_apt_mirror }}"
 
 # Default 'component'-s for 'deb' repository specification line.
 apt_components:
@@ -19,7 +24,7 @@ apt_add_src: true
 # no longer supported distributions.
 apt_ignore_valid: >-
   {{ false
-      if ansible_distribution_major_version | int >= debian_supported_os_version
+      if apt_distribution_major_version | int >= debian_supported_os_version
       else true
   }}
 

@@ -1,6 +1,12 @@
 ---
 
 - block:
+    - name: define | Reset all internal vars
+      set_fact:
+        _apt_repositories: []
+        _apt_repositories_prefs: []
+        _apt_preferences: []
+
     - name: define | Define apt repositories list
       set_fact:
         _apt_repositories: >-
