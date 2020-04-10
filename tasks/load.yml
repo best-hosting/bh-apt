@@ -7,7 +7,7 @@
 
 - name: load | Show OS vars filenames
   debug:
-    msg: "{{ role_path }}/vars/{{ os_vars }} , {{os_release_vars}}"
+    msg: "{{ role_path }}/vars/{{ os_vars }} , {{os_release_vars}}, {{ apt_suite }}"
 
 - name: load | OS variables
   include_vars: "{{ os_vars }}"

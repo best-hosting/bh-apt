@@ -4,7 +4,11 @@
 debian_supported_os_version: 9
 
 # Distribution name (codename).
-default_apt_suite: "{{ ansible_distribution_release }}"
+default_apt_suite: "{{ real_ansible_distribution_release }}"
+
+# apt priority for "target release"
+default_apt_target_release_priority: >-
+  {{ 990 if apt_suite == real_ansible_distribution_release else 100 }}
 
 # Default apt miror. Used, if 'url' is not specified.
 default_apt_mirror: 'http://mirror.mephi.ru/debian'
@@ -28,13 +32,13 @@ default_apt_preferences: >-
   {{  [ { 'comment' : "(default) Target release"
         , 'pkgs'    : '*'
         , 'pin'     : 'release n=' + apt_suite + ', o=Debian'
-        , 'pin_priority': 990
+        , 'pin_priority': apt_target_release_priority
         }
       , { 'comment' : "(default) Target release updates"
         , 'pkgs'    : '*'
         , 'pin'     : 'release n=' + apt_suite + '-updates'
                       + ', o=Debian'
-        , 'pin_priority': 990
+        , 'pin_priority': apt_target_release_priority
         }
       ]
   }}

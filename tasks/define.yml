@@ -59,9 +59,12 @@
         def_item: >-
           {{  { 'pkgs'  : '*'
               , 'pin_priority' :
-                  600 if item.pin
-                          | regex_search(' n=(\w+\W)*' + apt_suite + '(\W\w+)*(, |$)') is not none
-                    else 100
+                  [ apt_target_release_priority | int
+                  , (600 if item.pin
+                          | regex_search(' n=(\w+\W)*' + real_ansible_distribution_release + '(\W\w+)*(, |$)')
+                          is not none
+                      else 100)
+                  ] | min
               }
           }}
       loop: "{{ apt_preferences + _apt_repositories_prefs }}"

@@ -8,6 +8,9 @@ apt_suite: "{{ default_apt_suite }}"
 # Distribution major version.
 apt_distribution_major_version: "{{ ansible_distribution_major_version }}"
 
+# apt priority for "target release"
+apt_target_release_priority: "{{ default_apt_target_release_priority }}"
+
 # Default mirror.
 apt_mirror: "{{ default_apt_mirror }}"
 

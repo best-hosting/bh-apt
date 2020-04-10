@@ -7,19 +7,21 @@ _apt_repositories_prefs: []
 # Internal apt preferences list.
 _apt_preferences: []
 
+# Proper 'ansible_distribution_release': for Debian 6 ('squeeze')
+# 'ansible_distribution_release' is _not_ defined ('NA'), so here i define it.
+real_ansible_distribution_release: >-
+  {{ 'squeeze' if ansible_distribution_major_version | int == 6
+        else ansible_distribution_release }}
+
 sources_list: >-
   {{ '/etc/apt/sources.list'
-        if apt_suite == ansible_distribution_release
-           or (apt_suite == 'squeeze' and ansible_distribution_major_version | int == 6)
-        else
-          '/etc/apt/sources.list.d/' + apt_suite + '.list'
+        if apt_suite == real_ansible_distribution_release
+        else '/etc/apt/sources.list.d/' + apt_suite + '.list'
   }}
 
 preferences_pref: >-
   {{ '/etc/apt/preferences'
-        if apt_suite == ansible_distribution_release
-           or (apt_suite == 'squeeze' and ansible_distribution_major_version | int == 6)
-        else
-          '/etc/apt/preferences.d/' + apt_suite
+        if apt_suite == real_ansible_distribution_release
+        else '/etc/apt/preferences.d/' + apt_suite
   }}
 
