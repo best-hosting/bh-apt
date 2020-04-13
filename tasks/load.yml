@@ -15,3 +15,40 @@
 - name: load | OS-specific variables
   include_vars: "{{ os_release_vars }}"
 
+- name: load1
+  include_vars:
+    file: 'Debian.yml'
+    name: d0
+
+- name: load2
+  include_vars:
+    file: "{{ 'Debian-' + item + '.yml' }}"
+    name: "{{ 'd_' + item }}"
+  loop: ['6', '7', '8', '9', '10']
+
+- name:
+  set_fact:
+    d_huy: "{{ d_7 }}"
+
+- name: debug
+  debug:
+    msg: "{{ vars['d_huy'] }}"
+
+- name: build1
+  set_fact:
+    apt_defaults: >-
+      {{ apt_defaults
+            | combine({ _item_name : d0 | combine(_item_d)})
+      }}
+  vars:
+    _apt_suite: item.0
+    _apt_ver: item.1
+    _item_name: "{{ 'debian-' + item.1 | string }}"
+    _item_d : >-
+      {{ vars['d_' + item.1 | string] }}
+  loop: "{{ [('squeeze', 6), ('wheezy', 7)] }}"
+
+- name: debug
+  debug:
+    var: apt_defaults
+

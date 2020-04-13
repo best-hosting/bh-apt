@@ -1,5 +1,18 @@
 ---
 
+#- block:
+#    - name: define | Define apt suites
+#      set_fact:
+#        _apt_suites2: >-
+#          {{ _apt_suites2 + ... }}
+#      vars:
+#        def_item: >-
+#          {{  { 'distribution_major_version' : apt_defaults['item.name'].ansible_distribution_major_version
+#              , 'target_release_priority' : default_apt_target_release_priority
+#              , 'apt_mirror' : default_apt_mirror
+#              , 'apt_components' : ['main']
+#              , 'add_src' : true
+
 - block:
     - name: define | Reset all internal vars
       set_fact:

@@ -5,6 +5,11 @@
   tags:
     - always
 
+- name: stop
+  assert:
+    that:
+      - 2 == 1
+
 - name: Define variables
   import_tasks: define.yml
   tags:

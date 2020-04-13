@@ -5,6 +5,9 @@
 # Distribution name.
 apt_suite: "{{ default_apt_suite }}"
 
+# List of apt suites to configure.
+apt_suites2: []
+
 # Distribution major version.
 apt_distribution_major_version: "{{ ansible_distribution_major_version }}"
 

@@ -1,5 +1,8 @@
 ---
 
+_apt_suites2: []
+apt_defaults: []
+
 # Internal apt repositories list.
 _apt_repositories: []
 # Pins (apt preferences) specified alongside with repositories.
