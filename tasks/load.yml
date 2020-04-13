@@ -28,11 +28,13 @@
 
 - name:
   set_fact:
-    d_huy: "{{ d_7 }}"
+    d_huys: >-
+      {{ d_huys | combine({ item : vars['d_' + item] }) }}
+  loop: ['6', '7', '8', '9', '10']
 
 - name: debug
   debug:
-    msg: "{{ vars['d_huy'] }}"
+    var: d_huys
 
 - name: build1
   set_fact:
