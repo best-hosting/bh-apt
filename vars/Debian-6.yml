@@ -1,14 +1,22 @@
 ---
 
-default_apt_mirror: 'http://snapshot.debian.org/archive/debian/20160301T215315Z/'
-default_apt_repositories:
-  - { dist: 'squeeze' }
-  - { dist: 'squeeze-updates' }
-  - { dist: 'squeeze/updates'
-    , url: 'http://snapshot.debian.org/archive/debian-security/20160301T215315Z/'
-    }
-  - { dist: 'squeeze-lts'
-    , 'pin': 'release n=squeeze-lts, o=Debian'
-    , 'pin_priority': "{{ apt_target_release_priority }}"
-    }
+_apt_suites_defaults: >-
+  {{ _apt_suites_defaults | combine(
+        { 'debian_6' :
+            { 'apt_mirror': 'http://snapshot.debian.org/archive/debian/20160301T215315Z/'
+            , 'apt_repositories':
+                [ { 'dist': 'squeeze' }
+                , { 'dist': 'squeeze-updates' }
+                , { 'dist': 'squeeze/updates'
+                  , 'url': 'http://snapshot.debian.org/archive/debian-security/20160301T215315Z/'
+                  }
+                , { 'dist': 'squeeze-lts'
+                  , 'pin': 'release n=squeeze-lts, o=Debian'
+                  , 'pin_priority': "{{ apt_target_release_priority }}"
+                  }
+                ]
+            }
+        }
+      )
+  }}
 

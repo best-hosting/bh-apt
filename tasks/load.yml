@@ -12,6 +12,6 @@
 - name: load | OS variables
   include_vars: "{{ os_vars }}"
 
-- name: load | OS-specific variables
-  include_vars: "{{ os_release_vars }}"
+  #- name: load | OS-specific variables
+  #  include_vars: "{{ os_release_vars }}"
 

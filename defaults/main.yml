@@ -2,6 +2,9 @@
 
 # NOTE: Distribution name is _hardcoded_ to 'Debian' in various files.
 
+# Minimal (oldest) yet (officially) supported debian major version.
+debian_supported_os_version: 9
+
 # Distribution name.
 apt_suite: "{{ default_apt_suite }}"
 

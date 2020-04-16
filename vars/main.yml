@@ -7,6 +7,9 @@ _apt_repositories_prefs: []
 # Internal apt preferences list.
 _apt_preferences: []
 
+_apt_suites: []
+_apt_suite_defaults: []
+
 # Proper 'ansible_distribution_release': for Debian 6 ('squeeze')
 # 'ansible_distribution_release' is _not_ defined ('NA'), so here i define it.
 real_ansible_distribution_release: >-
@@ -23,5 +26,88 @@ preferences_pref: >-
   {{ '/etc/apt/preferences'
         if apt_suite == real_ansible_distribution_release
         else '/etc/apt/preferences.d/' + apt_suite
+  }}
+
+# Distribution name (codename).
+default_apt_suite: "{{ real_ansible_distribution_release }}"
+
+# apt priority for "target release"
+default_apt_target_release_priority: >-
+  {{ 990 if apt_suite == real_ansible_distribution_release else 100 }}
+
+# Default apt miror. Used, if 'url' is not specified.
+default_apt_mirror: 'http://mirror.mephi.ru/debian'
+
+# Default debian apt repositories. Used if not overwritten by os-specific
+# default. '-updates' and '/updates' (security) repository priority will be
+# set to 990 in 'default_apt_preferences'. '-backports' repository priority
+# should have priority set in 'Release' file.
+default_apt_repositories: >-
+  {{  [ { 'dist': apt_suite }
+      , { 'dist': apt_suite + '-updates' }
+      , { 'dist': apt_suite + '/updates'
+        , 'url' : 'http://security.debian.org/debian-security'
+        }
+      ] + ( [ { 'dist': apt_suite + '-backports' } ] if apt_add_backports else [] )
+  }}
+
+# Default apt preferences (set debian official repositories as target
+# release). Used if not overwritten by os-specific defaults.
+default_apt_preferences: >-
+  {{  [ { 'comment' : "(default) Target release"
+        , 'pkgs'    : '*'
+        , 'pin'     : 'release n=' + apt_suite + ', o=Debian'
+        , 'pin_priority': apt_target_release_priority
+        }
+      , { 'comment' : "(default) Target release updates"
+        , 'pkgs'    : '*'
+        , 'pin'     : 'release n=' + apt_suite + '-updates'
+                      + ', o=Debian'
+        , 'pin_priority': apt_target_release_priority
+        }
+      ]
+  }}
+
+
+_apt_suite_defaults: >-
+  {{  { 'debian_6' :
+          { 'apt_mirror': 'http://snapshot.debian.org/archive/debian/20160301T215315Z/'
+          , 'apt_repositories':
+              [ { 'dist': 'squeeze' }
+              , { 'dist': 'squeeze-updates' }
+              , { 'dist': 'squeeze/updates'
+                , 'url': 'http://snapshot.debian.org/archive/debian-security/20160301T215315Z/'
+                }
+              , { 'dist': 'squeeze-lts'
+                , 'pin': 'release n=squeeze-lts, o=Debian'
+                , 'pin_priority': apt_target_release_priority
+                }
+              ]
+          }
+
+      , 'debian_7' :
+          { 'apt_mirror': 'http://snapshot.debian.org/archive/debian/20190321T212815Z/'
+          , 'apt_repositories':
+              [ { 'dist': 'wheezy' }
+              , { 'dist': 'wheezy/updates'
+                , 'url': 'http://snapshot.debian.org/archive/debian-security/20190321T215527Z/'
+                }
+              , { 'dist': 'wheezy-backports'
+                , 'url': 'http://archive.debian.org/debian/'
+                }
+              , { 'dist': 'wheezy-lts'
+                , 'url': 'http://deb.freexian.com/extended-lts'
+                , 'pin': 'release n=wheezy-lts, o=Freexian'
+                , 'pin_priority': apt_target_release_priority
+                , 'keyring': 'freexian-archive-keyring'
+                }
+              , { 'dist': 'wheezy-lts-kernel'
+                , 'url': 'http://deb.freexian.com/extended-lts'
+                , 'pin': 'release n=wheezy-lts-kernel, o=Freexian'
+                , 'pin_priority': apt_target_release_priority
+                }
+              ]
+          }
+      }
   }}
 

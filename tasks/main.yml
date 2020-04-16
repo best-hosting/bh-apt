@@ -10,6 +10,11 @@
   tags:
     - always
 
+- name: Nahuy
+  assert:
+    that:
+      - 2 == 1
+
 - block:
     - name: Install sources.list
       template:
