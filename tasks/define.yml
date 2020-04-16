@@ -1,15 +1,41 @@
 ---
 
-- name: Bleeeeeeeeee
-  debug:
-    var: _apt_suite_defaults
-
 - block:
     - name: define | Reset all internal vars
       set_fact:
         _apt_repositories: []
         _apt_repositories_prefs: []
         _apt_preferences: []
+
+    - name: apt defaults
+      set_fact:
+        _apt_defaults: >-
+          {{ _apt_defaults | combine(
+                { item : def_item }
+              )
+          }}
+      vars:
+        def_item: >-
+          {{  { 'apt_suite' : item
+              , 'apt_target_release_priority' : default_apt_target_release_priority
+              , 'apt_mirror' : default_apt_mirror
+              , 'apt_repositories' : default_apt_repositories
+              , 'apt_preferences' : default_apt_preferences
+              }
+          }}
+        _apt_suite: "{{ item }}"
+      loop:
+        - 'debian_6'
+        - 'debian_7'
+
+    - name: Bleeeeeeeeee
+      debug:
+        var: _apt_defaults
+
+    - name: Nahuy
+      assert:
+        that:
+          - 2 == 1
 
     - name: define | Define apt repositories list
       set_fact:

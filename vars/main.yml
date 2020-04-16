@@ -7,8 +7,7 @@ _apt_repositories_prefs: []
 # Internal apt preferences list.
 _apt_preferences: []
 
-_apt_suites: []
-_apt_suite_defaults: []
+_apt_defaults: {}
 
 # Proper 'ansible_distribution_release': for Debian 6 ('squeeze')
 # 'ansible_distribution_release' is _not_ defined ('NA'), so here i define it.
@@ -43,12 +42,12 @@ default_apt_mirror: 'http://mirror.mephi.ru/debian'
 # set to 990 in 'default_apt_preferences'. '-backports' repository priority
 # should have priority set in 'Release' file.
 default_apt_repositories: >-
-  {{  [ { 'dist': apt_suite }
-      , { 'dist': apt_suite + '-updates' }
-      , { 'dist': apt_suite + '/updates'
+  {{  [ { 'dist': _apt_suite }
+      , { 'dist': _apt_suite + '-updates' }
+      , { 'dist': _apt_suite + '/updates'
         , 'url' : 'http://security.debian.org/debian-security'
         }
-      ] + ( [ { 'dist': apt_suite + '-backports' } ] if apt_add_backports else [] )
+      ] + ( [ { 'dist': _apt_suite + '-backports' } ] if apt_add_backports else [] )
   }}
 
 # Default apt preferences (set debian official repositories as target
@@ -56,12 +55,12 @@ default_apt_repositories: >-
 default_apt_preferences: >-
   {{  [ { 'comment' : "(default) Target release"
         , 'pkgs'    : '*'
-        , 'pin'     : 'release n=' + apt_suite + ', o=Debian'
+        , 'pin'     : 'release n=' + _apt_suite + ', o=Debian'
         , 'pin_priority': apt_target_release_priority
         }
       , { 'comment' : "(default) Target release updates"
         , 'pkgs'    : '*'
-        , 'pin'     : 'release n=' + apt_suite + '-updates'
+        , 'pin'     : 'release n=' + _apt_suite + '-updates'
                       + ', o=Debian'
         , 'pin_priority': apt_target_release_priority
         }

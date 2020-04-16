@@ -1,19 +1,9 @@
 ---
 
-- name: Load OS variables
-  import_tasks: load.yml
-  tags:
-    - always
-
 - name: Define variables
   import_tasks: define.yml
   tags:
     - always
-
-- name: Nahuy
-  assert:
-    that:
-      - 2 == 1
 
 - block:
     - name: Install sources.list
