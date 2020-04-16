@@ -20,6 +20,7 @@
         owner:  'root'
         group:  'root'
         mode:   0644
+      register: sources_list_updated
 
     - name: Disabled Release file valid check
       template:
@@ -30,7 +31,6 @@
         owner:  'root'
         group:  'root'
         mode:   0644
-        owner:  'root'
       when: apt_ignore_valid
 
     - name: Install apt preferences
@@ -47,6 +47,7 @@
     - name: Update apt cache
       apt:
         update_cache: yes
+      when: sources_list_updated.changed
 
     - name: Install archive keyring package
       package:
