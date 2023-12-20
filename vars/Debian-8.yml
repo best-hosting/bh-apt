@@ -1,12 +1,23 @@
 ---
 
+default_apt_mirror: 'http://snapshot.debian.org/archive/debian/20190325T215132Z/'
 # The same as default, but '-backports' url is redefined.
 default_apt_repositories: >-
-  {{  [ { 'dist': "{{ apt_suite }}" }
-      , { 'dist': "{{ apt_suite }}-updates" }
-      , { 'dist': "{{ apt_suite }}/updates"
-        , 'url' : 'http://security.debian.org/debian-security' }
+  {{  [ { 'dist': "{{ apt_suite }}"
+        , 'trusted': true
+        }
+      , { 'dist': "{{ apt_suite }}-updates"
+        , 'trusted': true
+        }
       , { 'dist': 'jessie-backports'
-        , 'url' : 'http://snapshot.debian.org/archive/debian/20190320T025509Z/' }
+        , 'url' : 'http://snapshot.debian.org/archive/debian/20190320T025509Z/'
+        , 'trusted': true
+        }
+      , { 'dist': 'jessie-lts'
+        , 'url': 'http://deb.freexian.com/extended-lts'
+        , 'pin': 'release n=jessie-lts, o=Freexian'
+        , 'pin_priority': 990
+        , 'keyring': 'freexian-archive-keyring'
+        }
       ]
   }}
