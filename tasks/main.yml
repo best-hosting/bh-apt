@@ -42,6 +42,9 @@
         owner:  'root'
         group:  'root'
         mode:   0644
+  tags:
+    - apt_conf
+    - apt
 
 - block:
     - name: Update apt cache
@@ -51,11 +54,13 @@
     - name: Install archive keyring package
       package:
         name: >-
-          {{ _apt_repositories 
+          {{ _apt_repositories
                 | selectattr('keyring', 'defined')
                 | map(attribute='keyring')
                 | list | default([])
           }}
         state: present
         allow_unauthenticated: true
+  tags:
+    - apt
 
