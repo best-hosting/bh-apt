@@ -29,7 +29,7 @@ apt_add_backports: true
 
 # apt repositories. Supported fields are:
 # - 'type' - either 'deb' or 'deb-src'. If not set will use 'deb'.
-# - 'url' - URL. If not set, will use 'apt_default_mirror' as default value.
+# - 'url' - URL. If not set, will use 'apt_mirror' as default value.
 # - 'dist' - debian suite specification. If not set, will use 'apt_suite' as
 # default value.
 # - 'components' - list of components. For debian official mirrors this is
